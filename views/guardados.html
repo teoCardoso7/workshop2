@@ -1,0 +1,56 @@
+<section>
+    <h1>Personajes guardados</h1>
+    <table id="guardados" class="tabla-personajes"></table>
+</section>
+
+<script type="text/javascript">
+    console.log("Entro!")
+    var dbGuardados = JSON.parse(localStorage.getItem("guardados"));
+    var listGuardados = $("#guardados");
+
+    if (!dbGuardados) {
+        localStorage.setItem("guardados", JSON.stringify([]));
+        dbGuardados = JSON.parse(localStorage.getItem("guardados"));
+    } else {
+        createList(dbGuardados);
+    }
+
+    function createList(personajes) {
+        var tds = "";
+        for (var i = 0; i < personajes.length; i++) {
+            tds += "<td>" + personajes[i].name + "</td>";
+            tds += "<td>" + personajes[i].hair_color + "</td>";
+            tds += "<td>" + personajes[i].eye_color + "</td>";
+            tds += "<td>" + personajes[i].height + " cm </td>";
+            tds += "<td>" + personajes[i].mass + " kg </td>";
+            tds += "<td>" + personajes[i].gender + "</td>";
+            tds += `<td><button class="btn-blue" onclick="deletePerson('${personajes[i].name}')">Remove</button></td>`;
+
+            listGuardados.append(`<tr id="${personajes[i].created}">${tds}</tr>`);
+            tds = "";
+        }
+    }
+
+    function deletePerson(person) {
+        var dbPersonajes = JSON.parse(localStorage.getItem("personajes"));
+        var dbGuardados = JSON.parse(localStorage.getItem("guardados"));
+
+        
+        for (var i = 0; i < dbGuardados.length; i++) {
+
+            
+            if (dbGuardados[i].name == person) {
+                
+                dbPersonajes.results.push(dbGuardados[i]);
+                dbGuardados.splice(i, 1);
+
+               
+                localStorage.setItem("guardados", JSON.stringify(dbGuardados));
+                localStorage.setItem("personajes", JSON.stringify(dbPersonajes));
+
+                
+                $("#guardados tr").remove();
+                createList(dbGuardados);
+            }
+        }
+    }

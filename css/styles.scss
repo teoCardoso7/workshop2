@@ -1,0 +1,55 @@
+
+//-----General----------
+*{
+    margin: 0;
+}
+body{
+    background-image: url(../assets/back.jpg);
+    
+}
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.thicc{
+    text-transform: uppercase;
+    font-weight: 4000;
+}
+
+//----Items---------------
+nav{
+    background-color: black;
+
+     flex-direction: row;
+    .logo{
+        p{
+            color: darkgoldenrod;
+            
+        }
+    }
+        a{
+            display: inline-block;
+            color:dimgray
+        }
+    }
+
+
+    .main-title{
+        text-align: center;
+        margin: 90px  auto;
+        color: white;
+        .top , .bottom{
+            
+            font-size: 200px;
+
+        }
+        .center{
+            font-size: 50px;
+        }
+    }
+    table{
+        color:white;
+    }

@@ -1,0 +1,96 @@
+<section>
+    <table id="personajes"></table>
+    <button id="vermas" onclick="addCharacters()">ver mas</button>
+</section>
+
+<script type="text/javascript">
+    var personsStorage = localStorage.getItem("personajes");
+    var lista = $('#personajes');
+    var num = 0;
+
+
+    if (!personsStorage) {
+        listaPersonajes();
+    } else {
+        var res = JSON.parse(personsStorage)
+        createList(res.results);
+    }
+
+    function listaPersonajes() {
+        var data = {
+            url: 'https://swapi.co/api/people',
+            type: 'GET',
+            success: function (res) {
+                localStorage.setItem("personajes", JSON.stringify(res))
+                createList(res.results);
+            }
+        };
+        $.ajax(data);
+    }
+
+    function addCharacters() {
+        var db = JSON.parse(localStorage.getItem("personajes"));
+        var data = {
+            url: db.next,
+            type: 'GET',
+            success: function (res) {
+                for (var i = 0; i < res.results.length; i++) {
+                    db.results.push(res.results[i]);
+                }
+                db.previous = res.previous;
+                db.next = res.next;
+                localStorage.setItem("personajes", JSON.stringify(db));
+                createList(res.results);
+            }
+        }
+        $.ajax(data);
+    }
+
+    function createList(personajes) {
+        var tds = "";
+        for (var i = 0; i < personajes.length; i++) {
+            num = i + 1
+            tds += "<td>" + num + "</td>";
+            tds += "<td>" + personajes[i].name + "</td>";
+            tds += "<td>" + personajes[i].hair_color + "</td>";
+            tds += "<td>" + personajes[i].eye_color + "</td>";
+            tds += "<td>" + personajes[i].mass + "cm</td>";
+            tds += "<td>" + personajes[i].gender + "</td>";
+            tds += `<td><button class="btn-blue" onclick="savePerson('${personajes[i].name}')">save</button></td>`;
+
+
+            lista.append(`<tr id="${personajes[i].created}">${tds}</tr>`);
+            tds = "";
+        }
+    }
+
+    function savePerson(person) {
+        console.log(person);
+
+        var dbPersonajes = JSON.parse(localStorage.getItem("personajes"));
+        var dbGuardados = JSON.parse(localStorage.getItem("guardados"));
+
+        if (!dbGuardados) {
+            localStorage.setItem("guardados", JSON.stringify([]));
+            dbGuardados = JSON.parse(localStorage.getItem("guardados"));
+        }
+
+        for (var i = 0; i < dbPersonajes.results.length; i++) {
+
+
+            if (dbPersonajes.results[i].name == person) {
+
+                dbGuardados.push(dbPersonajes.results[i]);
+                dbPersonajes.results.splice(i, 1);
+
+
+                localStorage.setItem("guardados", JSON.stringify(dbGuardados));
+                localStorage.setItem("personajes", JSON.stringify(dbPersonajes));
+
+
+                $("#personajes tr").remove();
+                createList(dbPersonajes.results);
+            }
+        }
+    }
+</script>
